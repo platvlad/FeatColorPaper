@@ -1,0 +1,95 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{edjusting}[2019/04/21 Based on 'Edjusting' package]
+
+\RequirePackage{algorithm}
+\RequirePackage{algorithmic}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{bm}
+\RequirePackage{commath}
+\RequirePackage{graphicx}
+\RequirePackage{relsize}
+\RequirePackage{siunitx}
+
+% Misc Text
+\newcommand{\term}[1]{\textit{#1}}
+\newcommand{\psref}[1]{\protect\subref{fig:#1}}
+\newcommand{\PnP}{P$n$P}
+
+% Operators
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\avg}{avg}
+
+% Misc Math
+\newcommand{\Id}{\mathrm{id}}
+\newcommand{\Tr}{\intercal}
+\newcommand{\mat}[1]{\bm{#1}}
+\newcommand{\vect}[1]{\mathnormal{#1}}
+\newcommand{\homv}[1]{\mathbf{#1}}
+\newcommand{\Str}[1]{\texttt{#1}}
+\newcommand{\Approx}[1]{\widetilde{#1}}
+
+% Sets
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\SE}{\mathit{SE}(3)}
+\newcommand{\SO}{\mathit{SO}(3)}
+
+% Image
+\newcommand{\Img}{I}
+\newcommand{\ImgDom}{\Omega}
+\newcommand{\Gauss}{G}
+\newcommand{\SD}{\sigma}
+\newcommand{\GaussS}{\Gauss_{\SD}}
+
+% 3D Model
+\newcommand{\Mesh}{\mathcal{S}}
+\newcommand{\MeshV}{V_\Mesh}
+\newcommand{\MeshF}{F_\Mesh}
+
+% Icosphere
+\newcommand{\Ico}{\mathcal{I}}
+\newcommand{\IcoV}{V_\Ico}
+\newcommand{\IcoF}{F_\Ico}
+
+% Camera
+\newcommand{\CamIntr}{\mat{K}}
+\newcommand{\Projection}[1]{\pi_{#1}}
+
+% Object pose
+\newcommand{\Pose}{\mat{M}}
+\newcommand{\RotMat}{\mat{R}}
+\newcommand{\TrVec}{\vect{t}}
+
+% Features
+\newcommand{\Inliers}{P}
+\newcommand{\FeatureCount}{n}
+\newcommand{\FeatureSet}{\{(\vect{u}_1, \vect{x}_1), \dots, (\vect{u}_{\FeatureCount}, \vect{x}_{\FeatureCount})\}}
+\newcommand{\InlierCount}{m}
+\newcommand{\InliersSet}{\{(\vect{u}_1, \vect{x}_1), \dots, (\vect{u}_{\InlierCount}, \vect{x}_{\InlierCount})\}}
+\newcommand{\AvgReprojErr}{e}
+\newcommand{\ErrMax}{\varepsilon}
+
+% Energy
+\newcommand{\Energy}{\mathcal{E}}
+\newcommand{\EnergyAt}{\Energy(\Pose)}
+
+\newcommand{\Response}{\psi}
+\newcommand{\Loss}{w}
+
+\newcommand{\EnergySum}{\tilde{\Energy}}
+\newcommand{\EnergySumAt}{\EnergySum(\Pose)}
+
+\newcommand{\ContourAt}{{C_{\Pose}}}
+\newcommand{\ContourPointsAt}{{\tilde{C}_{\Pose}}}
+
+\newcommand{\CoordAt}{{p_{\Pose}}}
+\newcommand{\NormalAt}{{n_{\Pose}}}
+
+% Optimization
+\newcommand{\MaxRot}{\alpha}
+\newcommand{\MaxTrans}{\delta}
+
+% Edges
+\newcommand{\MinAngle}{\varphi}
