@@ -1,0 +1,52 @@
+\documentclass[a4paper, 14pt]{article}
+\usepackage[left=20mm, top=20mm, right=10mm, bottom=20mm]{geometry}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage{hyphenat}
+\hyphenation{ма-те-ма-ти-ка вос-ста-нав-ли-вать}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[caption=false]{subfig}
+
+\usepackage{edjusting}
+
+\newif\ifdraft
+\drafttrue
+% \draftfalse
+\newcommand*\Comment[1]{
+    \ifdraft
+    {\par
+    \noindent
+    \colorbox{gray!10}{\parbox{0.98 \linewidth}{\textcolor{gray!100}{#1}}}
+    }
+    \fi
+}
+
+\title{
+    % TODO: над названием надо будет подумать
+    Применение ключевых точек и цветовой инфомации для трёхмерного трекинга
+}
+
+\begin{document}
+\maketitle
+\input{abstract}
+\pagebreak
+\tableofcontents
+\newpage
+
+\input{intro}
+\input{related_work}
+\input{tracking}
+\input{combining}
+\input{evaluation}
+\input{conclusions}
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}
+
