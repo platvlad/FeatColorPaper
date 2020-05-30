@@ -44,10 +44,15 @@
 \newcommand{\GaussS}{\Gauss_{\SD}}
 
 % Foreground and Background
-\newcommand{\ImgFg}{\ImgDom_f}
-\newcommand{\ImgBg}{\ImgDom_b}
-\newcommand{\Contour}{C}
-\newcommand{\CDist}{\Phi}
+\newcommand{\FgProj}{\ensuremath{\ImgDom_f}}
+\newcommand{\BgProj}{\ensuremath{\ImgDom_b}}
+\newcommand{\FgTrue}{\ensuremath{F}}
+\newcommand{\BgTrue}{\ensuremath{B}}
+\newcommand{\Contour}{\ensuremath{C}}
+\newcommand{\CDist}{\ensuremath{\Phi}}
+\newcommand{\CDistX}[1]{\ensuremath{\CDist \left( #1 \right)}}
+\newcommand{\He}{\ensuremath{\mathcal{H}}}
+\newcommand{\HeX}[1]{\ensuremath{\He \left( #1 \right)}}
 
 % 3D Model
 \newcommand{\Mesh}{\mathcal{S}}
@@ -61,12 +66,19 @@
 
 % Camera
 \newcommand{\CamIntr}{\mat{K}}
-\newcommand{\Projection}[1]{\pi_{#1}}
+\newcommand{\Proj}{\ensuremath{\pi}}
+\newcommand{\ProjAt}[1]{\ensuremath{\Proj_{#1}}}
 
 % Object pose
 \newcommand{\Pose}{\mat{M}}
 \newcommand{\RotMat}{\mat{R}}
 \newcommand{\TrVec}{\vect{t}}
+
+% Probability
+\newcommand{\Prob}{\ensuremath{\mathbb{P}}}
+\newcommand{\ProbX}[1]{\ensuremath{\Prob \left( #1 \right)}}
+\newcommand{\ProbMain}{\ensuremath{\mathcal{P}}}
+\newcommand{\ProbMainX}[1]{\ensuremath{\ProbMain \left( #1 \right) }}
 
 % Features
 \newcommand{\Inliers}{P}

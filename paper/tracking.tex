@@ -58,21 +58,25 @@
 Тогда, как и в~\cite{Hexner2016}, вероятность того, что $T$ является позицией
 объекта, можем оценить как
 
+\newcommand{\Hf}{\ensuremath{H_f}}
+\newcommand{\Hb}{\ensuremath{H_b}}
+\newcommand{\uvec}{\ensuremath{\vect{u}}}
+\newcommand{\hedist}{\ensuremath{\HeX{\CDistX{\uvec}}}}
+
 \begin{equation}
 \label{eqn:pos_prob}
-P(T) = \prod\limits_{x \in \Omega}(\mathbb{P}(x \in Fg | H_f, H_b) He(\Phi(x))
-+ \mathbb{P}(x \in Bg|H_f, H_b)(1 - He(\Phi(x)))
+    \ProbMainX{\Pose} = \prod\limits_{\uvec \in \ImgDom} \left(
+        \ProbX{\uvec \in \FgTrue \mid \Hf, \Hb} \hedist
+        + \ProbX{\uvec \in \BgTrue \mid \Hf, \Hb} \left( 1 - \hedist \right)
+    \right)
 \text{.}
 \end{equation}
 
-\Comment{В чем разница между $Fg$, $Bg$ и $\Omega_f$ и $\Omega_b$?}
-
-Здесь $Fg$ "--- передний план, $Bg$ "--- фон, $He$ "--- сглаженная функция
-Хевисайда:
+Здесь $\He$ "--- приближение функции Хевисайда:
 
 \begin{equation}
 \label{eqn:heaviside}
-    He(\Phi(x)) = \frac{1}{\pi} (\arctan(s * \Phi(x)) - \frac{\pi}{2})
+    \HeX{x} = \frac{1}{\pi} \left( \arctan(\alpha x) - \frac{\pi}{2} \right)
 \text{.}
 \end{equation}
 
@@ -344,7 +348,7 @@ T^{(i)}_{ex} = \Delta T T^{(i - 1)} = T^{(i - 1)}(T^{(i - 2)})^{-1} T^{(i -
 
 \begin{equation}
 \label{eqn:init_selection}
-    T_{color \, init} = argmin(E_{color}(T_{feat}), E_{color}(T_{ex}))
+    T_{color \, init} = \argmin(E_{color}(T_{feat}), E_{color}(T_{ex}))
 \end{equation}
 
 \subsubsection*{Согласование алгоритма ключевых точек с цветовым алгоритмом}
