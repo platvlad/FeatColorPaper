@@ -69,7 +69,8 @@
 гистограмма распределения цветов.
 Гистограммы строятся таким образом, чтобы значения в каждом канале разбивались
 на 32 ячейки, поэтому в этой главе под цветом пикселя $y$ будем понимать
-множество цветов, попадающих в одну ячейку гистограммы: $y \in [0; 31]^3$.
+множество цветов, попадающих в одну ячейку гистограммы:
+$y \in \{0, 1, \dots, 31\}^3$.
 В каждую ячейку гистограммы ${H_i}_j$ записывается доля пикселей
 соответствующих
 цветов на её области ${\ImgDom_i}_j$.
@@ -82,11 +83,11 @@ $\HistLocalB(y)$ "--- это вероятности точки иметь цве
 
 \begin{equation}
 \label{eqn:H_f_Y}
-\begin{array}{c}
-\HistLocalF(y) = \probX{I(\uvec) = y \mid \uvec \in \FgProj} \\
-\HistLocalB(y) = \probX{I(\uvec) = y \mid \uvec \in \BgProj}
+\begin{align}
+    \HistLocalF(y) &= \probX{I(\uvec) = y \mid \uvec \in \FgProj} \\
+    \HistLocalB(y) &= \probX{I(\uvec) = y \mid \uvec \in \BgProj}
 \text{.}
-\end{array}
+\end{align}
 \end{equation}
 
 Процесс получения позиции на новом кадре основан на максимизации апостериорной
@@ -122,12 +123,12 @@ $\probF{\uvec}$ и $\probB{\uvec}$ "--- вероятности попадани�
 
 \begin{equation}
 \label{eqn:Pfu}
-\begin{array}{c}
-\probF{\uvec} = \frac{\HistLocalF(y)\eta_f}{\HistLocalF(y)\eta_f +
-\HistLocalB(y)\eta_b} \text{,} \\
-\probB{\uvec} =\frac{\HistLocalB(y)\eta_b}{\HistLocalF(y)\eta_f +
-\HistLocalB(y)\eta_b} \text{,}
-\end{array}
+\begin{align}
+    \probF{\uvec} &= \frac{\HistLocalF(y)\eta_f}{\HistLocalF(y)\eta_f +
+        \HistLocalB(y)\eta_b} \text{,} \\
+    \probB{\uvec} &=\frac{\HistLocalB(y)\eta_b}{\HistLocalF(y)\eta_f +
+        \HistLocalB(y)\eta_b} \text{,}
+\end{align}
 \end{equation}
 
 где
@@ -159,11 +160,11 @@ $\FgProj$ будут и по цвету классифицироваться к�
 гистограммы, которые взвешенно суммируются со старыми: 
 
 \begin{equation}
-\begin{array}{c}
-\HistLocalF = \alpha_f \HistLocalF^{new} + (1 - \alpha_f) \HistLocalF^{old} \\
-\HistLocalB = \alpha_b \HistLocalB^{new} + (1 - \alpha_b) \HistLocalB^{old}
+\begin{align}
+    \HistLocalF &= \alpha_f \HistLocalF^{new} + (1 - \alpha_f) \HistLocalF^{old} \\
+    \HistLocalB &= \alpha_b \HistLocalB^{new} + (1 - \alpha_b) \HistLocalB^{old}
 \text{,}
-\end{array}
+\end{align}
 \end{equation}
 
 где $\alpha_f = 0.1, \alpha_b = 0.2$ - коэффициенты обновления.
@@ -239,19 +240,19 @@ $\probB{\uvec}$ по
 
 Если опыт $s_{local}$ пары гистограмм $\left( \HistLocalF, \HistLocalB \right)$
 меньше некоторого порога
-$s_{suff}$, то для точек области $\ImgDom_i$ $\Hf(y)$ и $\Hb(y)$ вычисляются
+$s_{\text{\it suff}}$, то для точек области $\ImgDom_i$ $\Hf(y)$ и $\Hb(y)$ вычисляются
 как
 взвешенные суммы локальных и глобальных гистограмм:
 
 \begin{equation}
 \label{eqn:histo_skill}
-\begin{array}{c}
-\Hf(y) = \frac{s_{local} \HistLocalF + (s_{suff} - s_{local})
-{H_{global}}_f}{s_{suff}} \\
-\Hb(y) = \frac{s_{local} \HistLocalB + (s_{suff} - s_{local})
-{H_{global}}_b}{s_{suff}}
+\begin{align}
+    \Hf(y) &= \dfrac{s_{local} \HistLocalF + (s_{suff} - s_{local})
+        {H_{global}}_f}{s_{suff}} \\
+    \Hb(y) &= \dfrac{s_{local} \HistLocalB + (s_{suff} - s_{local})
+        {H_{global}}_b}{s_{suff}}
 \text{.}
-\end{array}
+\end{align}
 \end{equation}
 
 Порог $s_{suff}$ выбирается как среднее значение опыта по всем локальным
