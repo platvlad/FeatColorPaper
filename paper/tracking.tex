@@ -42,48 +42,56 @@
 \newcommand{\uvec}{\ensuremath{\vect{u}}}
 \newcommand{\hedist}{\ensuremath{\HeX{\CDistX{\uvec}}}}
 \newcommand{\HistLocal}{\ensuremath{H_i}}
-\newcommand{\HistLocalF}{\ensuremath{{\HistLocal}_f}}
-\newcommand{\HistLocalB}{\ensuremath{{\HistLocal}_b}}
+\newcommand{\HistLocalFg}{\ensuremath{{\Hf}_i}}
+\newcommand{\HistLocalBg}{\ensuremath{{\Hb}_i}}
 
-Метод, использующий распределение цветов, основан на построении цветовых
-гистограмм.
-Изображение, на котором позиция объекта известна, разбивается на несколько
-непересекающихся областей~$\{\ImgDom_i\}_{i = 1}^n$, которые могут не покрыватьизображение целиком.
+Метод, использующий распределение цветов, направлен на нахождение такой
+позиции, при которой контур наилучшим образом отделяет передний план от фона.
+Это означает, что цвета на $\FgProj$ будет соответствовать цветам,
+встречавшимся на переднем плане ранее в ходе трекинга, и наоборот: точки,
+оказавшиеся на $\BgProj$, будут иметь цвет, характерный для фона.
+
+Для учёта цветовой статистики строятся цветовые гистограммы, в которые
+собираются данные о цветах точек в окрестности контура.
+На кадре, где позиция объекта известна, окрестность контура $\CtLocal$
+разбивается на несколько
+непересекающихся областей~$\{\CtLocal_i\}_{i = 1}^n$.
 Каждая из этих областей включает в себя часть переднего плана и часть фона:
 
 \begin{equation}
 \label{eqn:histo_partitioning}
 \begin{array}{c}
-\ImgDom_i = {\ImgDom_i}_f \cup {\ImgDom_i}_b \\
-{\ImgDom_i}_f = \ImgDom_i \cap \FgProj \\
-{\ImgDom_i}_b = \ImgDom_i \cap \BgProj
+\CtLocal_i = {\CtLocalFg}_i \cup {\CtLocalBg}_i \\
+{\CtLocalFg}_i = \CtLocal_i \cap \CtLocalFg \\
+{\CtLocalBg}_i = \CtLocal_i \cap \CtLocalBg
 \text{.}
 \end{array}
 \end{equation}
 
-Подробнее о том, как изображение разбивается на локальные области, будет
+Подробнее о том, как окрестность контура разбивается на локальные области,
+будет
 рассказано в следующем разделе.
 
-На каждой из областей ${\ImgDom_i}_j$, где $j \in \{ f, b\}$, строится
+На каждой из областей ${\CtLocalFg}_i, {\CtLocalBg}_i$ строится
 гистограмма распределения цветов.
 Гистограммы строятся таким образом, чтобы значения в каждом канале разбивались
 на 32 ячейки, поэтому в этой главе под цветом пикселя $y$ будем понимать
 множество цветов, попадающих в одну ячейку гистограммы:
 $y \in \{0, 1, \dots, 31\}^3$.
-В каждую ячейку гистограммы ${H_i}_j$ записывается доля пикселей
+В каждую ячейку гистограммы ${\HistLocal}_j$ записывается доля пикселей
 соответствующих
-цветов на её области ${\ImgDom_i}_j$.
+цветов на её области ${\CtLocal_i}_j$.
 
-Для данного цвета $y$ значения в гистограммах $\HistLocalF(y)$ и
-$\HistLocalB(y)$ "--- это вероятности точки иметь цвет $y$, находясь
+Для данного цвета $y$ значения в гистограммах $\HistLocalFg(y)$ и
+$\HistLocalBg(y)$ "--- это вероятности точки иметь цвет $y$, находясь
 соответственно на переднем плане и на фоне.
 Из-за того, что в каждой локальной области своя пара гистограмм, эти
 вероятности могут быть разными на разных участках изображения.
 
 \begin{align}
 \label{eqn:H_f_Y}
-    \HistLocalF(y) &= \probX{I(\uvec) = y \mid \uvec \in \FgProj} \\
-    \HistLocalB(y) &= \probX{I(\uvec) = y \mid \uvec \in \BgProj}
+    \HistLocalFg(y) &= \probX{I(\uvec) = y \mid \uvec \in \FgProj} \\
+    \HistLocalBg(y) &= \probX{I(\uvec) = y \mid \uvec \in \BgProj}
 \text{.}
 \end{align}
 
@@ -91,14 +99,14 @@ $\HistLocalB(y)$ "--- это вероятности точки иметь цве
 вероятности позиции при данном изображении и данном наборе гистограмм.
 Пусть дан новый кадр и некоторая позиция $\Pose$.
 Спроецируем объект на изображение с использованием этой позиции.
-Получим разбиение изображения на локальные области.
+Получим контур $\Contour$ и разбиение его окрестности на локальные области.
 Тогда, как и в~\cite{Hexner2016}, вероятность того, что $\Pose$ является
 позицией
 объекта, можем оценить как
 
 \begin{equation}
 \label{eqn:pos_prob}
-    \probMainX{\Pose} = \prod\limits_{\uvec \in \ImgDom} \left(
+    \probMainX{\Pose} = \prod\limits_{\uvec \in \CtLocal} \left(
         \probF{\uvec} \hedist
         + \probB{\uvec} \left( 1 - \hedist \right)
     \right)
@@ -115,83 +123,98 @@ $\HistLocalB(y)$ "--- это вероятности точки иметь цве
 
 $\He$ оценивает вероятность того, что $\uvec$ лежит на переднем плане, с точки
 зрения позиции объекта.
-$\probF{\uvec}$ и $\probB{\uvec}$ "--- вероятности попадания на передний план ина фон в соответствии с цветом точки:
+$\probF{\uvec}$ и $\probB{\uvec}$ "--- вероятности попадания на передний план и
+на фон в соответствии с цветом точки:
 
 \begin{align}
 \label{eqn:Pfu}
-    \probF{\uvec} &= \frac{\HistLocalF(y)\eta_f}{\HistLocalF(y)\eta_f +
-        \HistLocalB(y)\eta_b} \text{,} \\
-    \probB{\uvec} &=\frac{\HistLocalB(y)\eta_b}{\HistLocalF(y)\eta_f +
-        \HistLocalB(y)\eta_b} \text{,}
+    \probF{\uvec} &= \frac{\HistLocalFg(y)\eta_f}{\HistLocalFg(y)\eta_f +
+        \HistLocalBg(y)\eta_b} \text{,} \\
+    \probB{\uvec} &=\frac{\HistLocalBg(y)\eta_b}{\HistLocalFg(y)\eta_f +
+        \HistLocalBg(y)\eta_b} \text{,}
 \end{align}
 
 где
 $
-    \eta_f = \sum\limits_{\uvec \in \ImgDom_i}\hedist
-$ "--- количество точек переднего плана на $\ImgDom_i$,
+    \eta_f = \sum\limits_{\uvec \in \CtLocal_i}\hedist
+$ "--- количество точек переднего плана на $\CtLocal_i$,
 
 $
-    \eta_b = \sum\limits_{\uvec \in \ImgDom_i}(1 - \hedist)
+    \eta_b = \sum\limits_{\uvec \in \CtLocal_i}(1 - \hedist)
 $ "--- количество точек фона.
 
 
 Таким образом, вероятность позиции $\Pose$ будет высокой, если точки области
-$\FgProj$ будут и по цвету классифицироваться как точки переднего плана, а
-точки области $\BgProj$ "--- как фон.
+$\CtLocalFg$ будут и по цвету классифицироваться как точки переднего плана, а
+точки области $\CtLocalBg$ "--- как фон.
 
-Функция ошибки цветового трекинга получается логарифмированием и взятием с
+Функция энергии цветового трекинга получается логарифмированием и взятием с
 минусом
 формулы~\ref{eqn:pos_prob}:
 
 \begin{equation}
 \label{eqn:err_func}
-\Energy(\xi) = \sum\limits_{\uvec \in \ImgDom}
+\Energy(\xi) = \sum\limits_{\uvec \in \CtLocal}
 \log(\hedist \probF{\uvec} + (1 - \hedist)\probB{\uvec})
 \text{.}
 \end{equation}
 
-После получения новой позиции на каждом следующем кадре строятся новые
-гистограммы, которые взвешенно суммируются со старыми: 
-
-\begin{align}
-\HistLocalF &= \alpha_f \HistLocalF^{new} + (1 - \alpha_f) \HistLocalF^{old} \\\HistLocalB &= \alpha_b \HistLocalB^{new} + (1 - \alpha_b) \HistLocalB^{old}\text{,}
-\end{align}
-
-где $\alpha_f = 0.1, \alpha_b = 0.2$ - коэффициенты обновления.
-
-Позиция объекта получается минимизацией функции ошибки~\ref{eqn:err_func}.
-Оптимизация проводится методом последовательного квадратичного
-программирования(SLSQP)~\cite{SLSQP}.
+Позиция объекта получается минимизацией функции энергии~\ref{eqn:err_func}.
+Оптимизация проводится квазиньютоновским методом последовательного
+квадратичного
+программирования(SLSQP)~\cite{SLSQP}, аппроксимирующим гессиан функции.
 Градиент вычисляется аналитически.
 Вывод формулы градиента можно найти в~\cite{Tjaden2018}.
 \Comment{Подсчет градиента разве не отличается от \cite{Tjaden2018}?}
 
-Ширина области, на которой проводится оптимизация, составляет $0.4$ диаметра
-объекта для параметров переноса и $1$ радиан для параметров поворота.
+Поскольку функция~\ref{eqn:err_func} может быть зашумлённой в неблагоприятных
+для трекинга условиях, результат оптимизации может оказаться далеким от
+истинной позиции.
+Поэтому оптимизация проводится в ограниченной области с центром в точке
+инициализации.
+Для параметров переноса её ширина составляет $kd$, где $d$ "--- диаметр
+объекта.
+Ширина области для параметров поворота "--- $m$ радиан (в нашей реализации $d =
+0.4, m = 1$).
 При импорте модели она масштабируется так, чтобы её диаметр равнялся $5$,
 чтобы масштаб объекта не влиял на соотношение между осями поворота и переноса.
 
 \Comment{Про оптимизацию на пирамиде не сказано. В реализации пирамида сейчас
 тоже не используется}
 
+После получения новой позиции на каждом следующем кадре строятся новые
+гистограммы, которые взвешенно суммируются со старыми: 
+
+\begin{align}
+\HistLocalFg &= \alpha_f \HistLocalFg^{\text{\it new}} + (1 - \alpha_f)
+\HistLocalFg^{\text{\it old}} \\\HistLocalBg &= \alpha_b
+\HistLocalBg^{\text{\it new}} + (1 - \alpha_b) \HistLocalBg^{\text{\it
+old}}\text{,}
+\end{align}
+
+где $\alpha_f, \alpha_b$ - коэффициенты обновления (в нашей реализации
+$\alpha_f = 0.1, \alpha_b = 0.2$).
+
 \Comment{Про цветовые пространства здесь не говорится. Это уже обработка
 входных изображений, и она даёт значимое преимущество только на отдельном
 цветовом методе.
 На комбинированном общий результат слабо отличается }
 
-\subsubsection*{Разбиение изображения на локальные области}
+\subsubsection*{Разбиение на локальные области}
 
-В нашей реализации изображение разбивается на $32$ локальные области, для
+В нашей реализации окрестность контура разбивается на $32$ локальные области,
+для
 каждой из
 которых поддерживается одна пара гистограмм.
 
-Для каждой точки $\uvec \in \ImgDom_i$ при вычислении $\probF{\uvec}$ и
+Для каждой точки $\uvec \in \CtLocal_i$ при вычислении $\probF{\uvec}$ и
 $\probB{\uvec}$ по
-формулам~\ref{eqn:Pfu} выбирается соответствующая пара $\left( \HistLocalF,
-\HistLocalB \right)$.
+формулам~\ref{eqn:Pfu} выбирается соответствующая пара $\left( \HistLocalFg,
+\HistLocalBg \right)$.
 
 Оптимизация функции ошибки~\ref{eqn:err_func} направлена на нахождение такой
-позиции, при которой контур лучше всего отделяет передний план от фона, поэтомуеё вычисление проводится по полосе вокруг контура ширины $2r$ (в нашей
+позиции, при которой контур лучше всего отделяет передний план от фона, поэтому
+её вычисление проводится по полосе вокруг контура ширины $2r$ (в нашей
 реализации $r = 40$).
 Таким образом, требуется разбить на области эту полосу.
 Области должны, по возможности, содержать примерно равное количество точек
@@ -250,9 +273,8 @@ $\probB{\uvec}$ по
 
 Такое разделение объекта неизменно между кадрами, поэтому цветовую информацию
 в гистограммах можно накапливать в ходе трекинга.
-Данные в гистограммах $\HistLocalF$ будут при этом отражать распределение
-цветов на определённых областях объекта, а данные в гистограммах $\HistLocalB$
-"--- распределение цветов на фоне вокруг этих областей.
+Данные в гистограммах $\HistLocalFg$ будут при этом отражать распределение
+цветов на определённых областях объекта, а данные в гистограммах $\HistLocalBg$"--- распределение цветов на фоне вокруг этих областей.
 Количество гистограмм при этом относительно небольшое и можно 
 обновлять их все на каждом кадре.
 
@@ -266,7 +288,8 @@ $\probB{\uvec}$ по
 Для решения этой проблемы ведётся учёт <<опыта>> локальных гистограмм и
 заводится одна глобальная гистограмма.
 
-Если опыт $s_{local}$ пары гистограмм $\left( \HistLocalF, \HistLocalB \right)$меньше некоторого порога
+Если опыт $s_{\text{\it local}}$ пары гистограмм $\left( \HistLocalFg,
+\HistLocalBg \right)$меньше некоторого порога
 $s_{\text{\it suff}}$, то для точек области $\ImgDom_i$ $\Hf(y)$ и $\Hb(y)$
 вычисляются
 как
@@ -274,14 +297,17 @@ $s_{\text{\it suff}}$, то для точек области $\ImgDom_i$ $\Hf(y)
 
 \begin{align}
 \label{eqn:histo_skill}
-    \Hf(y) &= \dfrac{s_{local} \HistLocalF + (s_{suff} - s_{local})
-        {H_{global}}_f}{s_{suff}} \\
-    \Hb(y) &= \dfrac{s_{local} \HistLocalB + (s_{suff} - s_{local})
-        {H_{global}}_b}{s_{suff}}
+\Hf(y) &= \dfrac{s_{\text{\it local}} \HistLocalFg + (s_{\text{\it suff}} -
+s_{\text{\it local}})
+        {H_{\text {\it global}}}_f}{s_{\text{\it suff}}} \\
+\Hb(y) &= \dfrac{s_{\text{\it local}} \HistLocalBg + (s_{\text{\it suff}} -
+s_{\text{\it local}})
+        {H_{\text {\it global}}}_b}{s_{\text{\it suff}}}
 \text{.}
 \end{align}
 
-Порог $s_{suff}$ выбирается как среднее значение опыта по всем локальным
+Порог $s_{\text{\it suff}}$ выбирается как среднее значение опыта по всем
+локальным
 гистограммам.
 Опыт локальной гистограммы оценивается как общее количество пикселей, попавших
 когда-либо в её область.
@@ -289,7 +315,8 @@ $s_{\text{\it suff}}$, то для точек области $\ImgDom_i$ $\Hf(y)
 каждом кадре его значение домножается на коэффициент, меньший единицы:
 
 \begin{equation}
-s_{local} =  \alpha_f s_{local}^{new} + (1 - \alpha_f)  s_{local}^{old} 
+s_{\text{\it local}} = \alpha_f s_{\text{\it local}}^{\text{\it new}} + (1 -
+\alpha_f) s_{\text{\it local}}^{\text{\it old}}
 \text{.}
 \end{equation}
 
@@ -314,15 +341,15 @@ s_{local} =  \alpha_f s_{local}^{new} + (1 - \alpha_f)  s_{local}^{old}
 минимуму.
 В этом методе роль такой оптимизации играет алгоритм ключевых точек.
 
-\newcommand{\FeatAlg}{\ensuremath{F_{feat}}}
-\newcommand{\ColorAlg}{\ensuremath{F_{color}}}
+\newcommand{\FeatAlg}{\ensuremath{F_{\text{\it feat}}}}
+\newcommand{\ColorAlg}{\ensuremath{F_{\text {\it color}}}}
 \newcommand{\PoseOnFrame}[1]{\ensuremath{\Pose^{\left( #1 \right)}}}
 \newcommand{\PoseI}{\ensuremath{\PoseOnFrame{i}}}
-\newcommand{\FeatPoseI}{\ensuremath{\PoseI_{feat}}}
-\newcommand{\FeatPose}{\ensuremath{\Pose_{feat}}}
+\newcommand{\FeatPoseI}{\ensuremath{\PoseI_{\text {\it feat}}}}
+\newcommand{\FeatPose}{\ensuremath{\Pose_{\text {\it feat}}}}
 
-\newcommand{\XOld}{\ensuremath{\homv{x_{old}}}}
-\newcommand{\XNew}{\ensuremath{\homv{x_{new}}}}
+\newcommand{\XOld}{\ensuremath{\homv{x_{\text {\it old}}}}}
+\newcommand{\XNew}{\ensuremath{\homv{x_{\text{\it new}}}}}
 \newcommand{\ReprErr}[1]{\ensuremath{\homv{e}( #1 )}}
 
 Позиции объекта на видео определяются последовательно, от кадра к кадру.
@@ -369,7 +396,7 @@ s_{local} =  \alpha_f s_{local}^{new} + (1 - \alpha_f)  s_{local}^{old}
 
 \begin{equation}
 \label{eqn:extrapolation}
-\PoseI_{ex} = \Delta \Pose \PoseOnFrame{i - 1} = \PoseOnFrame{i -
+\PoseI_{\text{\it ex}} = \Delta \Pose \PoseOnFrame{i - 1} = \PoseOnFrame{i -
 1}(\PoseOnFrame{i - 2})^{-1} \PoseOnFrame{i - 1}
 \text{.}
 \end{equation}
@@ -379,10 +406,10 @@ s_{local} =  \alpha_f s_{local}^{new} + (1 - \alpha_f)  s_{local}^{old}
 
 \begin{equation}
 \label{eqn:init_selection}
-    \Pose_{color \, init} = \argmin(\Energy(\FeatPose), \Energy(\Pose_{ex}))
+\Pose_{\text{\it color init}} = \argmin(\Energy(\FeatPose),
+\Energy(\Pose_{\text{\it ex}}))
 \end{equation}
 
-\subsubsection*{Согласование алгоритма ключевых точек с цветовым алгоритмом}
 Позиция $\PoseI$, полученная цветовым методом, считается уточнённой
 посравнению с позицией $\FeatPoseI$.
 Поэтому она может быть использована, чтобы скорректировать метод ключевых
