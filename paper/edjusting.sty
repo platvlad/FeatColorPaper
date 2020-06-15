@@ -42,12 +42,28 @@
 \newcommand{\Gauss}{G}
 \newcommand{\SD}{\sigma}
 \newcommand{\GaussS}{\Gauss_{\SD}}
+\newcommand{\CtLocal}{B}
+\newcommand{\CtLocalFg}{\ensuremath{\CtLocal_f}}
+\newcommand{\CtLocalBg}{\ensuremath{\CtLocal_b}}
 
 % Foreground and Background
-\newcommand{\ImgFg}{\ImgDom_f}
-\newcommand{\ImgBg}{\ImgDom_b}
-\newcommand{\Contour}{C}
-\newcommand{\CDist}{\Phi}
+\newcommand{\FgProj}{\ensuremath{\ImgDom_f}}
+\newcommand{\BgProj}{\ensuremath{\ImgDom_b}}
+\newcommand{\FgTrue}{\ensuremath{F}}
+\newcommand{\BgTrue}{\ensuremath{B}}
+\newcommand{\Contour}{\ensuremath{C}}
+\newcommand{\CDist}{\ensuremath{\Phi}}
+\newcommand{\CDistX}[1]{\ensuremath{\CDist \left( #1 \right)}}
+\newcommand{\He}{\ensuremath{\mathcal{H}}}
+\newcommand{\HeX}[1]{\ensuremath{\He \left( #1 \right)}}
+
+% Probability
+\newcommand{\prob}{\ensuremath{\mathsf{P}}}
+\newcommand{\probX}[1]{\ensuremath{\prob \left( #1 \right)}}
+\newcommand{\probMain}{\ensuremath{\mathcal{P}}}
+\newcommand{\probMainX}[1]{\ensuremath{\probMain \left( #1 \right) }}
+\newcommand{\probF}[1]{\ensuremath{\prob_f \left( #1 \right)}}
+\newcommand{\probB}[1]{\ensuremath{\prob_b \left( #1 \right)}}
 
 % 3D Model
 \newcommand{\Mesh}{\mathcal{S}}
@@ -61,7 +77,8 @@
 
 % Camera
 \newcommand{\CamIntr}{\mat{K}}
-\newcommand{\Projection}[1]{\pi_{#1}}
+\newcommand{\proj}{\ensuremath{\pi}}
+\newcommand{\projAt}[1]{\ensuremath{\proj_{#1}}}
 
 % Object pose
 \newcommand{\Pose}{\mat{M}}
