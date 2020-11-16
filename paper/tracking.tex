@@ -40,6 +40,7 @@
 \newcommand{\Hf}{\ensuremath{H_f}}
 \newcommand{\Hb}{\ensuremath{H_b}}
 \newcommand{\uvec}{\ensuremath{\vect{u}}}
+\newcommand{\xvec}{\ensuremath{\vect{x}}}
 \newcommand{\hedist}{\ensuremath{\HeX{\CDistX{\uvec}}}}
 \newcommand{\HistLocal}{\ensuremath{H_i}}
 \newcommand{\HistLocalFg}{\ensuremath{{\Hf}_i}}
@@ -337,8 +338,8 @@ s_{\text{\it local}} = \alpha_f s_{\text{\it local}}^{\text{\it new}} + (1 -
 \newcommand{\FeatPoseI}{\ensuremath{\PoseI_{\text {\it feat}}}}
 \newcommand{\FeatPose}{\ensuremath{\Pose_{\text {\it feat}}}}
 
-\newcommand{\XOld}{\ensuremath{\vect{x_{\text {\it old}}}}}
-\newcommand{\XNew}{\ensuremath{\vect{x_{\text{\it new}}}}}
+\newcommand{\XOld}{\ensuremath{\xvec_{\text {\it old}}}}
+\newcommand{\XNew}{\ensuremath{\xvec_{\text{\it new}}}}
 \newcommand{\ReprErr}[1]{\ensuremath{\vect{e}( #1 )}}
 
 Схема комбинирования алгоритмов показана на рис.~\ref{fig:combining_schema}.
@@ -378,12 +379,11 @@ s_{\text{\it local}} = \alpha_f s_{\text{\it local}}^{\text{\it new}} + (1 -
 $\Img_k$
 до текущего кадра $\Img_l$, и её 2D-позициями на этих кадрах были
 $\uvec_k, \ldots, \uvec_l$ соответственно.
-Тогда суммарной ошибкой репроекции 3D-точки $x$ будет
+Тогда суммарной ошибкой репроекции 3D-точки $\xvec$ будет
 
 \begin{equation}
 \label{eqn:sum_reproj}
-\ReprErr{\homv{x}} = \sum\limits_{i = k}^l \| \homv{\uvec_i} - \CamIntr \cdot
-[\RotMat_i \mid \TrVec_i] \cdot \homv{x} \|
+\ReprErr{\vect{x}} = \sum\limits_{i = k}^l \| \uvec_i - \projAt{\Pose_i}(\xvec) \|
 \end{equation}
 
 Старая позиция заменяется на новую, если $\ReprErr{\XNew} < \ReprErr{\XOld}$.
@@ -419,7 +419,7 @@ $\uvec_k, \ldots, \uvec_l$ соответственно.
 
 \begin{equation}
 \label{eqn:err_reproj}
-\ReprErr{\vect{x}} = \| \homv{\uvec_{i + 1}} - \projAt{\Pose_i}(\vect{x}) \|
+\ReprErr{\xvec} = \| \uvec_{i + 1} - \projAt{\Pose_i}(\xvec) \|
 \end{equation}
 
 Старая позиция заменяется на новую, если $\ReprErr{\XNew} < \ReprErr{\XOld}$.
