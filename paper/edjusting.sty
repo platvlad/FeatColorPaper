@@ -42,20 +42,34 @@
 \newcommand{\Gauss}{G}
 \newcommand{\SD}{\sigma}
 \newcommand{\GaussS}{\Gauss_{\SD}}
-\newcommand{\CtLocal}{B}
-\newcommand{\CtLocalFg}{\ensuremath{\CtLocal_f}}
-\newcommand{\CtLocalBg}{\ensuremath{\CtLocal_b}}
 
 % Foreground and Background
 \newcommand{\FgProj}{\ensuremath{\ImgDom_f}}
 \newcommand{\BgProj}{\ensuremath{\ImgDom_b}}
-\newcommand{\FgTrue}{\ensuremath{F}}
-\newcommand{\BgTrue}{\ensuremath{B}}
 \newcommand{\Contour}{\ensuremath{C}}
 \newcommand{\CDist}{\ensuremath{\Phi}}
 \newcommand{\CDistX}[1]{\ensuremath{\CDist \left( #1 \right)}}
+
+% Heaviside
 \newcommand{\He}{\ensuremath{\mathcal{H}}}
 \newcommand{\HeX}[1]{\ensuremath{\He \left( #1 \right)}}
+
+% Border
+\newcommand{\CtLocal}{\ensuremath{B}}
+\newcommand{\CtLocalFg}{\ensuremath{\CtLocal_{f}}}
+\newcommand{\CtLocalBg}{\ensuremath{\CtLocal_{b}}}
+\newcommand{\CtLocalI}{\ensuremath{B_{i}}}
+\newcommand{\CtLocalFgI}{\ensuremath{\CtLocal_{fi}}}
+\newcommand{\CtLocalBgI}{\ensuremath{\CtLocal_{bi}}}
+\newcommand{\CtLocalCnt}{\ensuremath{n}}
+
+% Histograms
+\newcommand{\Hf}{\ensuremath{H_{f}}}
+\newcommand{\Hb}{\ensuremath{H_{b}}}
+\newcommand{\HistLocalFg}{\ensuremath{H_{fi}}}
+\newcommand{\HistLocalBg}{\ensuremath{H_{bi}}}
+\newcommand{\HistGlobalFg}{\ensuremath{H_{f0}}}
+\newcommand{\HistGlobalBg}{\ensuremath{H_{b0}}}
 
 % Probability
 \newcommand{\prob}{\ensuremath{\mathsf{P}}}
@@ -64,6 +78,17 @@
 \newcommand{\probMainX}[1]{\ensuremath{\probMain \left( #1 \right) }}
 \newcommand{\probF}[1]{\ensuremath{\prob_f \left( #1 \right)}}
 \newcommand{\probB}[1]{\ensuremath{\prob_b \left( #1 \right)}}
+\newcommand{\FgCnt}{\ensuremath{\eta_f}}
+\newcommand{\BgCnt}{\ensuremath{\eta_b}}
+
+% Coefs
+\newcommand{\CoefFg}{\ensuremath{\alpha_{f}}}
+\newcommand{\CoefBg}{\ensuremath{\alpha_{b}}}
+
+% Misc
+\newcommand{\uvec}{\ensuremath{\vect{u}}}
+\newcommand{\xvec}{\ensuremath{\vect{x}}}
+\newcommand{\hedist}{\ensuremath{\HeX{\CDistX{\uvec}}}}
 
 % 3D Model
 \newcommand{\Mesh}{\mathcal{S}}
