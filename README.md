@@ -1,1 +1,5 @@
 # ColorTrackingPaper
+
+## Useful Tools
+
+* latexdiff
